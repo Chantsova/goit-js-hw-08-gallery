@@ -63,3 +63,46 @@ export default [
     description: 'Lighthouse Coast Sea',
   },
 ];
+
+import images from './gallery-items.js';
+
+const imagesBox = document.querySelector('.js-gallery');
+const bodyEl = document.querySelector('body');
+
+const imagesCardsMarkup = makeImageCard(images);
+imagesBox.insertAdjacentHTML('beforeend', imagesCardsMarkup);
+
+function makeImageCard(images) {
+  return images
+    .map(({preview, original, description}) => {
+      return `
+      <li class='gallery__item'>
+        <a class='gallery__link' href='${original}'>
+          <img class='gallery__image' src='${preview}' data-source='${original}' alt=${description}/> 
+        </a>
+      </li>
+      `;
+    })
+    .join('');
+};
+
+bodyEl.addEventListener('click', onImageClick);
+  
+function onImageClick(event) {
+  const isImageBoxEl = event.target.classList.contains('a');
+
+  if (!isImageBoxEl) {
+    return;
+  }
+
+  const currentActiveImageBox = document.querySelector('.lightbox.is-open');
+
+  if(currentActiveImageBox) {
+    currentActiveImageBox.classList.remove(is-open);
+  }
+  
+  const boxEl = event.target;
+
+  boxEl.classList.add('is-open');
+}
+  
