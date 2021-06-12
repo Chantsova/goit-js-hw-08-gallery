@@ -101,8 +101,11 @@ function onImageClick(event) {
     currentActiveImageBox.classList.remove(is-open);
   }
   
-  const boxEl = event.target;
+  const lightboxEl = document.querySelector('.lightbox');
+  lightboxEl.classList.add('is-open');
 
-  boxEl.classList.add('is-open');
+  const lightboxImg = document.querySelector('.lightbox__image');
+  
+  lightboxImg.getAttribute(src) = 
 }
   
