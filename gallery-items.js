@@ -89,6 +89,7 @@ function makeImageCard(images) {
 bodyEl.addEventListener('click', onImageClick);
   
 function onImageClick(event) {
+  event.preventDefault()
   const isImageBoxEl = event.target.classList.contains('a');
 
   if (!isImageBoxEl) {
@@ -97,15 +98,15 @@ function onImageClick(event) {
 
   const currentActiveImageBox = document.querySelector('.lightbox.is-open');
 
-  if(currentActiveImageBox) {
-    currentActiveImageBox.classList.remove(is-open);
-  }
+  // if(currentActiveImageBox) {
+  //   currentActiveImageBox.classList.remove(is-open);
+  // }
   
-  const lightboxEl = document.querySelector('.lightbox');
-  lightboxEl.classList.add('is-open');
+  // const lightboxEl = document.querySelector('.lightbox');
+  // lightboxEl.classList.add('is-open');
 
-  const lightboxImg = document.querySelector('.lightbox__image');
+  //const lightboxImg = document.querySelector('.lightbox__image');
   
-  lightboxImg.getAttribute(src) = 
+  //lightboxImg.getAttribute(src) = 
 }
   
