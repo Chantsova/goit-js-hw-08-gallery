@@ -64,16 +64,11 @@ export default [
   },
 ];
 
-
-// 4. Если хотите выполнить задание в части реализации пролистывания изображений, при создании разметки путем дополнения тега img data-атрибутом записывайте для каждого из изображений его индекс (разумеется, листание можно реализовать и путем навигации по DOM либо прохождением циклом по массиву всех изображений, но это куда менее оптимальный вариант).
-
-// 5. Слушатели для закрытия модального окна по клавише ESC и листания изображений создавайте только при открытии модального окна (то есть внутри ответственной за это функции). Соответственно, удаляйте при закрытии (внутри функции, отвечающей за закрытие модалки) – память браузера скажет вам за это спасибо. (edited) 
-
 import images from './gallery-items.js';
 
 const refs = {
   imagesBox: document.querySelector('.js-gallery'),
-  originalImage: document.querySelector('.gallery__link'),
+  originalImage: document.querySelector('.gallery__image'),
   lightboxEl: document.querySelector('.lightbox'),
   lightboxImg: document.querySelector('.lightbox__image'),
   lightboxCloseBtn: document.querySelector('.lightbox__button'),
@@ -84,13 +79,12 @@ const imagesCardsMarkup = makeImageCard(images);
 refs.imagesBox.insertAdjacentHTML('beforeend', imagesCardsMarkup);
 
 function makeImageCard(images) {
-  
   return images
-    .map(({preview, original, description}) => {
+    .map(({preview, original, description}, index) => {
       return `
       <li class='gallery__item'>
         <a class='gallery__link' href='${original}'>
-          <img class='gallery__image' src='${preview}' data-source='${original}' alt=${description}/> 
+          <img class='gallery__image' src='${preview}' data-source='${original}' alt='${description}' index='${index}'/> 
         </a>
       </li>
       `;
@@ -98,14 +92,13 @@ function makeImageCard(images) {
     .join('');
 };
 
-
-
 function onImageClick(event) {
   event.preventDefault();
   
   window.addEventListener('keydown', onEscKeyPress);
   window.addEventListener('keydown', onNavigationKeysPress);
   const isImageBoxEl = event.target.classList.contains('gallery__image');
+
   if (!isImageBoxEl) {
     return;
   }
@@ -114,18 +107,20 @@ function onImageClick(event) {
 
   const source = event.target.dataset.source;
   const altName = event.target.getAttribute('alt');
+  const index = event.target.getAttribute('index');
   refs.lightboxImg.setAttribute('src', source);
   refs.lightboxImg.setAttribute('alt', altName);
-  let index = images.map(image => image.original).indexOf(source);
-  return index;
+  refs.lightboxImg.setAttribute('index', index);
   }
 
-function forCloseModal(event) {
+function forCloseModal() {
   window.removeEventListener('keydown', onEscKeyPress);
   window.removeEventListener('keydown', onNavigationKeysPress);
+  
   refs.lightboxEl.classList.remove('is-open');
   refs.lightboxImg.setAttribute('src', '');
   refs.lightboxImg.setAttribute('alt', '');
+  refs.lightboxImg.setAttribute('index', '');
 }
 
 function onEscKeyPress(event) {
@@ -137,13 +132,22 @@ function onEscKeyPress(event) {
 }
 
 function onNavigationKeysPress(event) {
+  let currentIndex = refs.lightboxImg.getAttribute('index');
+  let numberCurrentIdx = parseInt(currentIndex);
+
   if (event.code === 'ArrowRight') {
-  refs.lightboxImg.getAttribute('alt');
+    let newIndexIncr = numberCurrentIdx + 1;
+    refs.lightboxImg.src = images[newIndexIncr].original;
+    refs.lightboxImg.alt = images[newIndexIncr].description;
+    refs.lightboxImg.setAttribute('index', newIndexIncr);
+    }
+    
+  if (event.code === 'ArrowLeft') {
+    let newIndexDecr = numberCurrentIdx - 1;   
+    refs.lightboxImg.src = images[newIndexDecr].original;
+    refs.lightboxImg.alt = images[newIndexDecr].description;
+    refs.lightboxImg.setAttribute('index', newIndexDecr);
   }
-  // if (event.code === 'ArrowLeft') {
-  //   refs.lightboxImg.getAttribute('src', source-1);
-  //   refs.lightboxImg.getAttribute('alt', altName-1);
-  // }
 }
 
 refs.imagesBox.addEventListener('click', onImageClick);
