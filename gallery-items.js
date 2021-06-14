@@ -134,20 +134,34 @@ function onEscKeyPress(event) {
 function onNavigationKeysPress(event) {
   let currentIndex = refs.lightboxImg.getAttribute('index');
   let numberCurrentIdx = parseInt(currentIndex);
+  const imagesLength = images.length;
+  
 
   if (event.code === 'ArrowRight') {
     let newIndexIncr = numberCurrentIdx + 1;
+    
+     if (newIndexIncr === imagesLength) {
+       newIndexIncr = 0;
+    }
+
     refs.lightboxImg.src = images[newIndexIncr].original;
     refs.lightboxImg.alt = images[newIndexIncr].description;
     refs.lightboxImg.setAttribute('index', newIndexIncr);
     }
     
   if (event.code === 'ArrowLeft') {
-    let newIndexDecr = numberCurrentIdx - 1;   
+    let newIndexDecr = numberCurrentIdx - 1;
+
+    if (newIndexDecr === -1) {
+       newIndexDecr = imagesLength - 1;
+    }
+
     refs.lightboxImg.src = images[newIndexDecr].original;
     refs.lightboxImg.alt = images[newIndexDecr].description;
     refs.lightboxImg.setAttribute('index', newIndexDecr);
   }
+
+
 }
 
 refs.imagesBox.addEventListener('click', onImageClick);
